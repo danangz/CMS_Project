@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="CMSModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Candidate">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="DateOfBirth" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="WorkingPlace" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Experience" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="Certificate" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="Phone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="LinkCV" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="English" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="CandidateSkills" Relationship="Self.FK_CandidateSkill_Candidate1" FromRole="Candidate" ToRole="CandidateSkill" />
+    <NavigationProperty Name="InterviewResults" Relationship="Self.FK_InterviewResult_Candidate" FromRole="Candidate" ToRole="InterviewResult" />
+  </EntityType>
+  <EntityType Name="CandidateSkill">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CandidateId" Type="Int32" Nullable="false" />
+    <Property Name="SkillId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Candidate" Relationship="Self.FK_CandidateSkill_Candidate1" FromRole="CandidateSkill" ToRole="Candidate" />
+    <NavigationProperty Name="Skill" Relationship="Self.FK_CandidateSkill_Skill" FromRole="CandidateSkill" ToRole="Skill" />
+  </EntityType>
+  <EntityType Name="InterviewResult">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CandidateId" Type="Int32" Nullable="false" />
+    <Property Name="RequestId" Type="Int32" Nullable="false" />
+    <Property Name="Status" Type="Int16" />
+    <Property Name="InterviewTime" Type="DateTime" Precision="3" />
+    <Property Name="Interviewer" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="PositionId" Type="Int32" Nullable="false" />
+    <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Comment" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="Result" Type="Int16" />
+    <Property Name="Suggestion" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Candidate" Relationship="Self.FK_InterviewResult_Candidate" FromRole="InterviewResult" ToRole="Candidate" />
+    <NavigationProperty Name="Position" Relationship="Self.FK_InterviewResult_Position" FromRole="InterviewResult" ToRole="Position" />
+    <NavigationProperty Name="Request" Relationship="Self.FK_InterviewResult_Request" FromRole="InterviewResult" ToRole="Request" />
+  </EntityType>
+  <EntityType Name="Position">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="InterviewResults" Relationship="Self.FK_InterviewResult_Position" FromRole="Position" ToRole="InterviewResult" />
+  </EntityType>
+  <EntityType Name="Request">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="RequestName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Description" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="InterviewResults" Relationship="Self.FK_InterviewResult_Request" FromRole="Request" ToRole="InterviewResult" />
+  </EntityType>
+  <EntityType Name="Skill">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="CandidateSkills" Relationship="Self.FK_CandidateSkill_Skill" FromRole="Skill" ToRole="CandidateSkill" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <Association Name="FK_CandidateSkill_Candidate1">
+    <End Role="Candidate" Type="Self.Candidate" Multiplicity="1" />
+    <End Role="CandidateSkill" Type="Self.CandidateSkill" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Candidate">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="CandidateSkill">
+        <PropertyRef Name="CandidateId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_InterviewResult_Candidate">
+    <End Role="Candidate" Type="Self.Candidate" Multiplicity="1" />
+    <End Role="InterviewResult" Type="Self.InterviewResult" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Candidate">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="InterviewResult">
+        <PropertyRef Name="CandidateId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CandidateSkill_Skill">
+    <End Role="Skill" Type="Self.Skill" Multiplicity="1" />
+    <End Role="CandidateSkill" Type="Self.CandidateSkill" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Skill">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="CandidateSkill">
+        <PropertyRef Name="SkillId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_InterviewResult_Position">
+    <End Role="Position" Type="Self.Position" Multiplicity="1" />
+    <End Role="InterviewResult" Type="Self.InterviewResult" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Position">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="InterviewResult">
+        <PropertyRef Name="PositionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_InterviewResult_Request">
+    <End Role="Request" Type="Self.Request" Multiplicity="1" />
+    <End Role="InterviewResult" Type="Self.InterviewResult" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Request">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="InterviewResult">
+        <PropertyRef Name="RequestId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="CMSEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Candidates" EntityType="Self.Candidate" />
+    <EntitySet Name="CandidateSkills" EntityType="Self.CandidateSkill" />
+    <EntitySet Name="InterviewResults" EntityType="Self.InterviewResult" />
+    <EntitySet Name="Positions" EntityType="Self.Position" />
+    <EntitySet Name="Requests" EntityType="Self.Request" />
+    <EntitySet Name="Skills" EntityType="Self.Skill" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <AssociationSet Name="FK_CandidateSkill_Candidate1" Association="Self.FK_CandidateSkill_Candidate1">
+      <End Role="Candidate" EntitySet="Candidates" />
+      <End Role="CandidateSkill" EntitySet="CandidateSkills" />
+    </AssociationSet>
+    <AssociationSet Name="FK_InterviewResult_Candidate" Association="Self.FK_InterviewResult_Candidate">
+      <End Role="Candidate" EntitySet="Candidates" />
+      <End Role="InterviewResult" EntitySet="InterviewResults" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CandidateSkill_Skill" Association="Self.FK_CandidateSkill_Skill">
+      <End Role="Skill" EntitySet="Skills" />
+      <End Role="CandidateSkill" EntitySet="CandidateSkills" />
+    </AssociationSet>
+    <AssociationSet Name="FK_InterviewResult_Position" Association="Self.FK_InterviewResult_Position">
+      <End Role="Position" EntitySet="Positions" />
+      <End Role="InterviewResult" EntitySet="InterviewResults" />
+    </AssociationSet>
+    <AssociationSet Name="FK_InterviewResult_Request" Association="Self.FK_InterviewResult_Request">
+      <End Role="Request" EntitySet="Requests" />
+      <End Role="InterviewResult" EntitySet="InterviewResults" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

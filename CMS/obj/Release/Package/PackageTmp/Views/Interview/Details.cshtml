@@ -1,0 +1,94 @@
+@model CMS.Models.InterviewResult
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details of Interview Result</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Request.RequestName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Request.RequestName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Candidate.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Candidate.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Position)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Position.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.InterviewTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.InterviewTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Interviewer)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Interviewer)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.InterStatus)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Comment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Comment)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Result)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.InterResult)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Suggestion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Suggestion)
+        </dd>
+
+
+    </dl>
+</div>
+<div>
+    <input type="submit" value="Edit" class="btnSearch" onclick="location.href='@Url.Action("Edit", "Interview", new { id = Model.Id })'" />
+    <input type="button" class="btnSearch" value="Back to List" style="width: 120px;" onclick="location.href='@Url.Action("Index", "Interview")'" />
+</div>

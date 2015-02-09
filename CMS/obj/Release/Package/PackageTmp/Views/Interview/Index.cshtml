@@ -1,0 +1,83 @@
+@model IEnumerable<CMS.Models.InterviewResult>
+
+@{
+    ViewBag.Title = "Index";
+    var grid = new WebGrid(source: (List<CMS.Models.InterviewResult>)Model, defaultSort: "Name", rowsPerPage: 10);
+}
+
+<h2>Interview</h2>
+
+<p>
+    <input type="button" class="btnSearch" value="Create New" style="width: 120px;" onclick="location.href='@Url.Action("Create", "Interview")'" />
+    <input type="button" class="btnSearch" value="Delete" style="width: 120px;" onclick="deleteSelected()" />
+</p>
+<div>
+    @grid.GetHtml(
+                 tableStyle: "table table-bordered",
+                 headerStyle: "head",
+                 htmlAttributes: new { id = "checkableGrid" },
+        alternatingRowStyle: "alt",
+        columns: grid.Columns(
+                   grid.Column("Id", "{checkall}", format: @<input type="checkbox" id="checkboxid_@item.Id" />, canSort:false, style: "width_checkbox"),
+                   grid.Column("RequestName", "Request Name", format: @<a href="~/Interview/Details/@item.Id" id="btnSubmit">@item.Request.RequestName</a>),
+                   grid.Column("CandidateName", "Candidate Name", format: @<a href="~/Interview/Details/@item.Id" id="btnSubmit">@item.Candidate.Name</a>),
+                   grid.Column("Position", "Position", format: @<span>@item.Position.Name</span>),
+                   grid.Column("Interviewer", "Interviewer"),
+                   grid.Column("InterviewTime", "Interview Time")
+                   )
+    )
+</div>
+<script>
+    $(document).ready(function () {
+        $("#checkableGrid th").each(function () {
+            if ($.trim($(this).text().toString().toLowerCase()) === "{checkall}") {
+                $(this).text('');
+                $("<input/>", { type: "checkbox", id: "cbSelectAll", value: "", onclick: "selectAll()" }).appendTo($(this));
+                $(this).append("<span id=\"selectUnselect\" style=\"display: none\">1</span>");
+            }
+        });
+    });
+    function selectAll() {
+        var selectUnselect = document.getElementById("selectUnselect");
+        if (selectUnselect.innerHTML == "1") {
+            selectUnselect.innerHTML = "0";
+            $("[id^=checkboxid_]").prop('checked', true);
+        }
+        else {
+            selectUnselect.innerHTML = "1";
+            $("[id^=checkboxid_]").prop('checked', false);
+        }
+    }
+    function deleteSelected() {
+        var allCheckBoxes = $("[id^=checkboxid_]");
+        var checkedId = "";
+        for (i = 0; i < allCheckBoxes.length; i++) {
+            if (allCheckBoxes[i].checked == true)
+                checkedId = checkedId + allCheckBoxes[i].id.replace("checkboxid_", "") + "|";
+        }
+        if (checkedId == "")
+            return;
+        var r = confirm("Are you sure to delete all selected items?");
+        if (r == true) {
+            var requestData = {
+                interviewIds: checkedId
+            };
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url: '@Url.Action("DeleteInterview", "Interview")',
+                async: false,
+                data: requestData,
+                dataType: "json",
+                timeout: 5000,
+                success: function (response) {
+                    if (response.success == false) {
+                    }
+                    else {
+                        location.reload();
+                    }
+                },
+            });
+        }
+    }
+</script>

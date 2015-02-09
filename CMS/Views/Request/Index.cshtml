@@ -1,0 +1,125 @@
+@model IEnumerable<CMS.Models.Request>
+
+@{
+    ViewBag.Title = "Index";
+    var grid = new WebGrid(source: (List<CMS.Models.Request>)Model, defaultSort: "Name", rowsPerPage: 10);
+}
+
+<h2>Request</h2>
+
+<p>
+        <input type="button" class="btnSearch" value="Create New" style="width: 120px;" onclick="location.href='@Url.Action("Create", "Request")'" />
+        <input type="button" class="btnSearch" value="Delete" style="width: 120px;" onclick="deleteSelected()" />
+        @*<div>
+            <input id="txtSearch" type="text"  onkeyup="searchResult()" />
+            <table id="tblSearchResult">
+
+            </table>
+        </div>*@
+</p>
+<div>
+    @grid.GetHtml(
+        tableStyle: "table table-bordered",
+        headerStyle: "head",
+        htmlAttributes: new { id = "checkableGrid" },
+        alternatingRowStyle: "alt",
+        columns: grid.Columns(
+          grid.Column("Id", "{checkall}", format: @<input type="checkbox" id="checkboxid_@item.Id"/>, canSort:false,  style: "width_checkbox"),
+          grid.Column("RequestName", "Request Name",format: @<a href="~/Request/Edit/@item.Id" id="btnSubmit">@item.RequestName</a>),
+          grid.Column("Description", "Description")
+              )
+        )
+</div>
+<script>
+    var txtSearch = document.getElementById("txtSearch");
+    $(document).ready(function () {
+        $("#checkableGrid th").each(function () {
+            if ($.trim($(this).text().toString().toLowerCase()) === "{checkall}") {
+                $(this).text('');
+                $("<input/>", { type: "checkbox", id: "cbSelectAll", value: "", onclick:"selectAll()" }).appendTo($(this));
+                $(this).append("<span id=\"selectUnselect\" style=\"display: none\">1</span>");
+            }
+        });
+    });
+    function selectAll() {
+        var selectUnselect = document.getElementById("selectUnselect");
+        if (selectUnselect.innerHTML == "1") {
+            selectUnselect.innerHTML = "0";
+            $("[id^=checkboxid_]").prop('checked', true);
+        }
+        else {
+            selectUnselect.innerHTML = "1";
+            $("[id^=checkboxid_]").prop('checked', false);
+        }
+    }
+    function deleteSelected() {
+        var allCheckBoxes = $("[id^=checkboxid_]");
+        var checkedId = "";
+        for (i = 0; i < allCheckBoxes.length; i++) {
+            if (allCheckBoxes[i].checked == true)
+                    checkedId = checkedId + allCheckBoxes[i].id.replace("checkboxid_", "") + "|";
+        }
+        if (checkedId == "")
+            return;
+        var r = confirm("Are you sure to delete all selected items?");
+        if (r == true) {
+            var requestData = {
+                requestIds: checkedId
+            };
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url: '@Url.Action("DeleteRequest", "Request")',
+                async: false,
+                data: requestData,
+                dataType: "json",
+                timeout: 5000,
+                success: function (response) {
+                    if (response.success == false) {
+                    }
+                    else {
+                        location.reload();
+                    }
+                },
+            });
+        }
+    }
+    function searchResult() {
+        if (txtSearch.value == "")
+        {
+            $("#tblSearchResult tr").remove();
+            return;
+        }
+        var requestData = {
+            searchString: txtSearch.value
+        };
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: '@Url.Action("SearchRequest", "Request")',
+            async: false,
+            data: requestData,
+            dataType: "json",
+            timeout: 5000,
+            success: function (response) {
+                console.log(response);
+                if (response.success == false) {
+                }
+                else {
+                    var json = response;
+                    bindSearchResult(json);
+                }
+            },
+        });
+    }
+    function bindSearchResult(returnJson) {
+        var table = document.getElementById("tblSearchResult");
+        $("#tblSearchResult tr").remove();
+        for (rowIndex in returnJson.rows) {
+            console.log(row);
+            var row = table.insertRow(-1);
+            var cellName = row.insertCell(0);
+            cellName.innerHTML = "<a href=\"/Request/Details/" + returnJson.rows[rowIndex].Id + "\">" + returnJson.rows[rowIndex].RequestName + "</a>";
+        }
+    }
+</script>

@@ -1,0 +1,90 @@
+@model CMS.Models.Candidate
+
+@{
+    ViewBag.Title = "Details of Candidate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details of Candidate</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateOfBirth)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DOB)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.WorkingPlace)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.WorkingPlace)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Experience)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Experience)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Certificate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Certificate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Phone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Phone)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CandidateSkill)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CandidateSkill)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LinkCV)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LinkCV)
+        </dd>
+
+
+
+    </dl>
+</div>
+<div>
+    <input type="submit" value="Edit" class="btnSearch" onclick="location.href='@Url.Action("Edit", "Candidates", new { id = Model.Id })'" />
+    <input type="button" class="btnSearch" value="Back to List" style="width: 120px;" onclick="location.href='@Url.Action("Index", "Candidates")'" />
+</div>

@@ -1,0 +1,210 @@
+@model CMS.Models.CandidateNewModel
+
+@{
+    ViewBag.Title = "Create Candidate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create Candidate</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <table style="width: 70%;">
+            <tr>
+                <td>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.DateOfBirth, new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            <div class='input-group date' id='datetimepicker' style="width: 200px;" onchange="datetimepicked(this)">
+                                <input type='text' id='txtdatetimepicker' name="DateOfBirth" class="form-control" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                            @Html.HiddenFor(model => model.DateOfBirth, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.DateOfBirth, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.WorkingPlace, new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.WorkingPlace, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.WorkingPlace, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Experience, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Experience, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Experience, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Certificate, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Certificate, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Certificate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.English, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.English, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.English, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Skills, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            <select id="txtSkill" name="Skills" multiple="multiple" class="form-control text-box single-line"></select>
+                        </div>
+                    </div>
+                </td>
+                <td colspan="2">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.LinkCV, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                        <div class="col-md-10">
+                            <div class="">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <div class="progress" style="width: 250px; margin-bottom: 0px">
+                                                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                                                    <span class="sr-only">0% complete</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="btn btn-success fileinput-button">
+                                                <i class="glyphicon glyphicon-plus">
+                                                </i>
+                                                <input id="fileupload" type="file" name="files[]" multiple>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            @Html.HiddenFor(model => model.LinkCV, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.LinkCV, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <input type="submit" value="Create" class="btnSearch" />
+        <input type="button" class="btnSearch" value="Back to List" style="width: 120px;" onclick="location.href='@Url.Action("Index", "Candidates")'" />
+    </div>
+}
+
+<style>
+    .container {
+        padding-left: 0px !important;
+    }
+    .ui-dropdownchecklist-selector.ui-state-default.ui-state-active {
+        width: 280px !important;
+    }
+
+    .ui-dropdownchecklist-text {
+        width: 280px !important;
+    }
+</style>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: '@Url.Action("GetSkillInCreate", "Candidates")',
+            async: false,
+            dataType: "json",
+            timeout: 5000,
+            success: function (response) {
+                if (response.success == false) {
+                }
+                else {
+                    for (var i = 0; i < response.rows.length; i++) {
+                        $("#txtSkill").append($("<option value='" + response.rows[i].SkillId + "'>" + response.rows[i].SkillName + "</option>"));
+                    }
+                }
+            },
+        });
+        $("#txtSkill").dropdownchecklist({ maxDropHeight: 200, emptyText: "" });
+    });
+
+    $(function () {
+        $('#datetimepicker').datetimepicker();
+    });
+
+    $(document).ready(function () {
+        $('#fileupload').fileupload({
+            dataType: 'json',
+            url: '/Candidates/UploadFiles',
+            autoUpload: true,
+            singleFileUploads: true,
+            limitMultiFileUploads: 1,
+            done: function (e, data) {
+                document.getElementById("LinkCV").value = data.result.name;
+            }
+        }).on('fileuploadprogressall', function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('.progress .progress-bar').css('width', progress + '%');
+        });
+    });
+</script>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

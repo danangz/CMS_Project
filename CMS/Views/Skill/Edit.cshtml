@@ -1,0 +1,30 @@
+@model CMS.Models.Skill
+
+@{
+    ViewBag.Title = "Edit Skill";
+}
+
+<h2>Edit Skill</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div>
+        <input type="submit" value="Save" class="btnSearch" />
+        <input type="button" class="btnSearch" value="Back to List" style="width: 120px;" onclick="location.href='@Url.Action("Index", "Skill")'" />
+    </div>
+}
