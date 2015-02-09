@@ -1,0 +1,287 @@
+@using System.Web.Mvc;
+@{
+    ViewBag.Title = "Home Page";
+}
+<h1>Home</h1>
+<br />
+<div id="detail_form" style="display: none; font-size:12px" title="View Detail">
+    <div style="margin: 10px 10px 10px 10px">
+        <label id="txtCandidateName" style="font-size: 15px; color: #2b579a"></label>
+        <br />
+        <table>
+            <tr>
+                <td>
+                    Phone: <label id="txtCandidatePhone"></label>
+                </td>
+                <td>&nbsp;&nbsp;</td>
+                <td>
+                    Working Place: <label id="txtCandidateWorking"></label>
+                </td>
+                <td>
+                    &nbsp;&nbsp;
+                </td>
+                <td>
+                    Experience: <label id="txtCandidateExperience"></label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Email: <label id="txtCandidateEmail"></label>
+                </td>
+                <td>&nbsp;&nbsp;</td>
+                <td>
+                    Date Of Birth: <label id="txtCandidateDOB"></label>
+                </td>
+                <td>
+                    &nbsp;&nbsp;
+                </td>
+                <td>
+                    Certificate: <label id="txtCandidateCertificate"></label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    Skill: <label id="txtCandidateSkill"></label>
+                </td>
+            </tr>
+        </table>
+        <hr />
+        <table class="table table-bordered" id="grd1">
+            <tr>
+                <th>Request</th>
+                <th>Time</th>
+                <th>Interviewer</th>
+                <th>Position</th>
+                <th>Result</th>
+                <th>English</th>
+                <th>Status</th>
+            </tr>
+        </table>
+        <input id="btnClose" type="button" value="Close" class="btnSearch" />
+    </div>
+</div>
+<div>
+    <div id="search_form">
+        <table>
+            <tr>
+                <td>
+                    <span>Request</span>
+                </td>
+                <td>
+                    @Html.DropDownList("requestName", new SelectList(ViewBag.RequestList, "Value", "Text"), "", new { @style = "width: 180px; height: 27px; float: left;", @class = "input-sm" })
+                </td>
+                <td>
+                    &nbsp;&nbsp;&nbsp;
+                </td>
+                <td>
+                    <span>Name/Phone</span>
+                </td>
+                <td>
+                    <input type="text" id="candidateName" />
+                </td>
+                <td>
+                    &nbsp;&nbsp;&nbsp;
+                </td>
+                <td>
+                    <span>Skill</span>
+                </td>
+                <td>
+                    <select id="txtSkill" multiple="multiple"></select>
+                </td>
+                <td>
+                    &nbsp;&nbsp;&nbsp;
+                </td>
+                <td>
+                    <span>Postion</span>
+                </td>
+                <td>
+                    @Html.DropDownList("txtPosition", new SelectList(ViewBag.PositionList, "Value", "Text"), "", new { @style = "width: 100px; height: 27px;", @class = "input-sm" })
+                </td>
+                <td>
+                    &nbsp;&nbsp;&nbsp;
+                </td>
+                <td>
+                    <span>Status</span>
+                </td>
+                <td>
+                    @Html.DropDownList("txtStatus", new SelectList(ViewBag.StatusList, "Value", "Text"), "", new { @style = "width: 100px; height: 27px;", @class = "input-sm" })
+                </td>
+                <td>
+                    &nbsp;&nbsp;&nbsp;
+                </td>
+                <td>
+                    <input id="btnSearch" type="button" class="btnSearch" value="Search" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <br />
+    <div>
+        @{
+            var grid = new WebGrid(source: Model, rowsPerPage: 10);
+        }
+        @grid.GetHtml(
+        htmlAttributes: new { id = "main_grid" },
+        tableStyle: "table table-bordered",
+        headerStyle: "head",
+        alternatingRowStyle: "alt",
+        columns:
+        grid.Columns(
+                 grid.Column("Candidate's Name", format: @<a onclick='View(@item.CandidateId)'>@item.CandidateName</a>),
+                                                                                                                                                                                                     grid.Column("CandidatePhone", "Phone"),
+                                                                                                                                                                                                     grid.Column("CandidateEmail", "Email"),
+                                                                                                                                                                                                     grid.Column("RequestName", "Request"),
+                                                                                                                                                                                                     grid.Column("InterviewTime", "Interview Time"),
+                                                                                                                                                                                                     grid.Column("Interviewer", "Interviewer"),
+                                                                                                                                                                                                     grid.Column("PositionName", "Position")
+                                                                                                                                                                                           )
+                                                                                                                                                                                                     )
+    </div>
+</div>
+<style>
+    .ui-dropdownchecklist.ui-dropdownchecklist-selector-wrapper.ui-widget {
+        width: 150px !important;
+    }
+
+    .ui-dropdownchecklist.ui-dropdownchecklist-dropcontainer-wrapper.ui-widget {
+        width: 150px !important;
+    }
+</style>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: '@Url.Action("GetSkill", "Home")',
+            async: false,
+            dataType: "json",
+            timeout: 5000,
+            success: function (response) {
+                if (response.success == false) {
+                }
+                else {
+                    for (var i = 0; i < response.rows.length; i++) {
+                        $("#txtSkill").append($("<option value='" + response.rows[i].SkillId + "'>" + response.rows[i].SkillName + "</option>"));
+                    }
+                }
+            },
+        });
+        $("#txtSkill").dropdownchecklist({ emptyText: "", width: 150 });
+    });
+
+
+    $("#btnClose").click(function () {
+        $("#detail_form").dialog("close");
+    });
+
+    function View(candidateId) {
+        var requestData = {
+            candidateId: candidateId,
+        };
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: '@Url.Action("ViewDetail", "Home")',
+            async: false,
+            data: requestData,
+            dataType: "json",
+            timeout: 5000,
+            success: function (response) {
+                if (response.success == false) {
+                }
+                else {
+                    $("#detail_form").dialog({
+                        closeOnEscape: false,
+                        open: function (event, ui) { $(".ui-dialog-titlebar-close").hide() },
+                        height: 'auto',
+                        width: 'auto',
+                        modal: true,
+                        resizable: false,
+                    });
+                    $('#txtCandidateName').text(response.rows[0].CandidateName);
+                    $('#txtCandidatePhone').text(response.rows[0].CandidatePhone);
+                    $('#txtCandidateEmail').text(response.rows[0].CandidateEmail);
+                    $('#txtCandidateWorking').text(response.rows[0].CandidateWorking);
+                    $('#txtCandidateDOB').text(response.rows[0].CandidateDOB);
+                    $('#txtCandidateSkill').text(response.rows[0].CandidateSkill);
+                    $('#txtCandidateExperience').text(response.rows[0].CandidateExperience);
+                    $('#txtCandidateCertificate').text(response.rows[0].CandidateCertificate);
+
+                    var rows = $('#grd1').find('tr');
+                    rows.each(function (index, value) {
+                        if (index > 0) {
+                            $(value).remove();
+                        }
+                    });
+                    drawTable(response.rows, 1);
+                }
+            },
+        });
+    };
+
+    function drawTable(data, main) {
+        for (var i = 0; i < data.length; i++) {
+            drawRow(data[i], main);
+        }
+    }
+
+    function drawRow(rowData, main) {
+        if (main == 1) {
+            var row = $("<tr />")
+            $("#grd1").append(row);
+            row.append($("<td>" + rowData.InterviewRequest + "</td>"));
+            row.append($("<td>" + rowData.InterviewTime + "</td>"));
+            row.append($("<td>" + rowData.Interviewer + "</td>"));
+            row.append($("<td>" + rowData.Position + "</td>"));
+            row.append($("<td>" + rowData.Result + "</td>"));
+            row.append($("<td>" + rowData.English + "</td>"));
+            row.append($("<td>" + rowData.Status + "</td>"));
+        }
+        else {
+            var row = $("<tr />")
+            $("#main_grid").append(row);
+            row.append($("<td><a onclick='View(" + rowData.CandidateId + ")'>" + rowData.CandidateName + "</a></td>"));
+            row.append($("<td>" + rowData.CandidatePhone + "</td>"));
+            row.append($("<td>" + rowData.CandidateEmail + "</td>"));
+            row.append($("<td>" + rowData.InterviewRequest + "</td>"));
+            row.append($("<td>" + rowData.InterviewTime + "</td>"));
+            row.append($("<td>" + rowData.Interviewer + "</td>"));
+            row.append($("<td>" + rowData.Position + "</td>"));
+        }
+    }
+
+    $("#btnSearch").click(function () {
+        debugger;
+        var requestData = {
+            requestName: $("#requestName").val(),
+            candidateName: $("#candidateName").val(),
+            skill: $("#txtSkill").val(),
+            position: $("#txtPosition").val(),
+            status: $("#txtStatus").val(),
+        };
+        $.ajax({
+            cache: false,
+            type: "POST",
+            url: '@Url.Action("Search", "Home")',
+            async: false,
+            data: requestData,
+            dataType: "json",
+            timeout: 5000,
+            success: function (response) {
+                if (response.success == false) {
+                }
+                else {
+                    var rows = $('#main_grid').find('tr');
+                    rows.each(function (index, value) {
+                        if (index > 0) {
+                            $(value).remove();
+                        }
+                    });
+                    drawTable(response.rows, 0);
+                }
+            },
+        });
+    });
+
+</script>

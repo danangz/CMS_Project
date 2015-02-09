@@ -1,0 +1,78 @@
+th a {
+    color: #ffffff !important;
+    text-decoration: none;
+}
+
+td a :hover {
+    cursor: pointer !important;
+}
+
+th {
+    background-color: #2b579a;
+    color: #ffffff;
+}
+
+.btnSearch {
+    height: 30px;
+    width: 80px;
+    font-weight: bold;
+    background-color: #fff;
+    color: #2b579a;
+    border: 1px solid #2b579a;
+}
+
+    .btnSearch:hover {
+        background-color: #2b579a;
+        color: #fff;
+        border: 1px solid #ddd;
+    }
+
+.ui-dialog-titlebar {
+    color: #fff !important;
+    background: #2b579a !important;
+    border-radius: 0px !important;
+    height: 30px;
+    text-align: center;
+    padding-top: 5px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.ui-dialog {
+    border-radius: 0px !important;
+    position: absolute !important;
+}
+
+.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl {
+    border-radius: 0 !important;
+}
+
+#detail_form {
+    border: 1px solid #2b579a;
+    background-color: #ffffff;
+}
+
+#datetimepicker {
+    width: 200px !important;
+}
+
+td a {
+    cursor: pointer;
+}
+
+.input-sm {
+    border-radius: 0px !important;
+}
+
+.width_namecolumn {
+    width: 30%;
+}
+
+.width_checkbox {
+    width: 10px;
+}
+
+.navbar-inverse {
+background-color: #2b579a !important;
+border-color: #2b579a !important;
+}

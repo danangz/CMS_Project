@@ -1,0 +1,102 @@
+@using CMS.Models
+<script src="~/Scripts/jquery.media.js"></script>
+@{
+    ViewBag.Title = "Candidates";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var grid = new WebGrid(Model, defaultSort: "Name", rowsPerPage: 10);
+}
+
+<h2>Candidate</h2>
+
+<p>
+    <input type="button" class="btnSearch" value="Create New" style="width: 120px;" onclick="location.href='@Url.Action("Create", "Candidates")'" />
+    <input type="button" class="btnSearch" value="Delete" style="width: 120px;" onclick="deleteSelected()" />
+</p>
+
+<div>
+    @grid.GetHtml(
+        tableStyle: "table table-bordered",
+        headerStyle: "head",
+        htmlAttributes: new { id = "checkableGrid" },
+        alternatingRowStyle: "alt",
+        columns: grid.Columns(
+            grid.Column("Id", "{checkall}", format: @<input type="checkbox" id="checkboxid_@item.Id"/>, canSort:false,  style: "width_checkbox"),
+            grid.Column("Candidate's Name", format: @<a href="~/Candidates/Details/@item.Id" id="btnSubmit">@item.Name</a>),
+            grid.Column("WorkingPlace", "Working Place"),
+            grid.Column("Experience", "Experiences"),
+            grid.Column("Phone", "Phone"),
+            grid.Column("Email", "Email"),
+            grid.Column("English", "English"),
+            grid.Column("View CV", format: @<a class="media" href="~/Upload/@item.LinkCV">Open</a>)
+                       )
+                     )
+</div>
+<style>
+    .width_checkbox {
+        width: 10px;
+    }
+</style>
+<script>
+
+
+    $(document).ready(function () {
+        $("#checkableGrid th").each(function () {
+            if ($.trim($(this).text().toString().toLowerCase()) === "{checkall}") {
+                $(this).text('');
+                $("<input/>", { type: "checkbox", id: "cbSelectAll", value: "", onclick: "selectAll()" }).appendTo($(this));
+                $(this).append("<span id=\"selectUnselect\" style=\"display: none\">1</span>");
+            }
+        });
+    });
+    function selectAll() {
+        var selectUnselect = document.getElementById("selectUnselect");
+        if (selectUnselect.innerHTML == "1") {
+            selectUnselect.innerHTML = "0";
+            $("[id^=checkboxid_]").prop('checked', true);
+        }
+        else {
+            selectUnselect.innerHTML = "1";
+            $("[id^=checkboxid_]").prop('checked', false);
+        }
+    }
+    function deleteSelected() {
+        var allCheckBoxes = $("[id^=checkboxid_]");
+        var checkedId = "";
+        for (i = 0; i < allCheckBoxes.length; i++) {
+            if (allCheckBoxes[i].checked == true)
+                checkedId = checkedId + allCheckBoxes[i].id.replace("checkboxid_", "") + "|";
+        }
+        if (checkedId == "")
+            return;
+        var r = confirm("Are you sure to delete all selected items?");
+        if (r == true) {
+            var requestData = {
+                canIds: checkedId
+            };
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url: '@Url.Action("DeleteCandidates", "Candidates")',
+                async: false,
+                data: requestData,
+                dataType: "json",
+                timeout: 5000,
+                success: function (response) {
+                    if (response.success == false) {
+                        alert('Can not delete because selected item(s) is using!')
+                    }
+                    else {
+                        location.reload();
+                    }
+                },
+            });
+        }
+    }
+
+    function ViewCV(canId)
+    {
+
+    }
+</script>
+

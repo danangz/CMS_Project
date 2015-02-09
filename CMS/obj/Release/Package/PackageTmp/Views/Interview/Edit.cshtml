@@ -1,0 +1,226 @@
+@model CMS.Models.InterviewResult
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>InterviewResult</h4>
+        <hr />
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CandidateId, "CandidateId", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input id="txtSearchCandidate" type="text" onkeyup="searchCandidateResult()" value="@Model.Candidate.Name" />
+                <table id="tblSearchCandidateResult"></table>
+                @Html.HiddenFor(model => model.CandidateId)
+                @Html.ValidationMessageFor(model => model.CandidateId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RequestId, "RequestId", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input id="txtSearchRequest" type="text" onkeyup="searchRequestResult()" value="@Model.Request.RequestName" />
+                <table id="tblSearchRequestResult"></table>
+                @Html.HiddenFor(model => model.RequestId)
+                @Html.ValidationMessageFor(model => model.RequestId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Status, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select onchange="selectStatus(this)">
+                    <option value="1">Applied</option>
+                    <option value="0">Rejected</option>
+                </select>
+                @Html.HiddenFor(model => model.Status)
+                @Html.ValidationMessageFor(model => model.Status)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.InterviewTime, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class='input-group date' id='datetimepicker' style="width: 200px;" onchange="datetimepicked(this)">
+                    <input type='text' id='txtdatetimepicker' class="form-control" value="@Model.InterviewTime" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+                @Html.HiddenFor(model => model.InterviewTime)
+                @Html.ValidationMessageFor(model => model.InterviewTime)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Interviewer, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Interviewer)
+                @Html.ValidationMessageFor(model => model.Interviewer)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PositionId, "PositionId", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("PositionId", String.Empty)
+                @Html.ValidationMessageFor(model => model.PositionId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Description)
+                @Html.ValidationMessageFor(model => model.Description)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Comment, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Comment)
+                @Html.ValidationMessageFor(model => model.Comment)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Result, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select onchange="selectResult(this)">
+                    <option value="1">Yet to Start</option>
+                    <option value="0">Completed</option>
+                </select>
+                @Html.HiddenFor(model => model.Result)
+                @Html.ValidationMessageFor(model => model.Result)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Suggestion, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Suggestion)
+                @Html.ValidationMessageFor(model => model.Suggestion)
+            </div>
+        </div>
+    </div>
+    <div>
+        <input type="submit" value="Save" class="btnSearch" onclick="submitClicked()" />
+        <input type="button" class="btnSearch" value="Back to List" style="width: 120px;" onclick="location.href='@Url.Action("Index", "Interview")'" />
+    </div>
+}
+<script>
+    $(function () {
+        $('#datetimepicker').datetimepicker();
+    });
+
+    $(document).ready(function () {
+        document.getElementById("Status").value = 1;
+        document.getElementById("Result").value = 1;
+    });
+    function searchRequestResult() {
+        var txtSearchRequest = document.getElementById("txtSearchRequest");
+        $("#tblSearchRequestResult tr").remove();
+        if (txtSearchRequest.value == "") {
+            return;
+        }
+        var requestData = {
+            searchString: txtSearchRequest.value
+        };
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: '@Url.Action("SearchRequest", "Request")',
+            async: false,
+            data: requestData,
+            dataType: "json",
+            timeout: 5000,
+            success: function (response) {
+                if (response.success == false) {
+                }
+                else {
+                    var json = response;
+                    bindSearchRequestResult(json)
+                }
+            },
+        });
+    }
+    function bindSearchRequestResult(returnJson) {
+        var table = document.getElementById("tblSearchRequestResult");
+        for (rowIndex in returnJson.rows) {
+            var row = table.insertRow(-1);
+            var cellName = row.insertCell(0);
+            cellName.innerHTML = "<a href=\"#\" onclick=\"selectRequest(" + returnJson.rows[rowIndex].Id + ",'" + returnJson.rows[rowIndex].RequestName + "'" + ")\">" + returnJson.rows[rowIndex].RequestName + "</a>";
+        }
+    }
+    function selectRequest(idRequest, RequestName) {
+        $("#RequestId").val(idRequest);
+        document.getElementById("txtSearchRequest").value = RequestName;
+        $("#tblSearchRequestResult tr").remove();
+    }
+    function searchCandidateResult() {
+        var txtSearchCandidate = document.getElementById("txtSearchCandidate");
+        $("#tblSearchCandidateResult tr").remove();
+        if (txtSearchCandidate.value == "") {
+            return;
+        }
+        var CandidateData = {
+            searchString: txtSearchCandidate.value
+        };
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: '@Url.Action("SearchCandidate", "Candidates")',
+            async: false,
+            data: CandidateData,
+            dataType: "json",
+            timeout: 5000,
+            success: function (response) {
+                if (response.success == false) {
+                }
+                else {
+                    var json = response;
+                    bindSearchCandidateResult(json)
+                }
+            },
+        });
+    }
+    function bindSearchCandidateResult(returnJson) {
+        var table = document.getElementById("tblSearchCandidateResult");
+        for (rowIndex in returnJson.rows) {
+            var row = table.insertRow(-1);
+            var cellName = row.insertCell(0);
+            cellName.innerHTML = "<a href=\"#\" onclick=\"selectCandidate(" + returnJson.rows[rowIndex].Id + ",'" + returnJson.rows[rowIndex].CandidateName + "')\">" + returnJson.rows[rowIndex].CandidateName + "</a>";
+        }
+    }
+    function selectCandidate(idCandidate, CandidateName) {
+        $("#CandidateId").val(idCandidate);
+        document.getElementById("txtSearchCandidate").value = CandidateName;
+        $("#tblSearchCandidateResult tr").remove();
+    }
+    function selectStatus(statusList) {
+        var idx = statusList.selectedIndex;
+        var content = statusList.options[idx].value;
+        document.getElementById("Status").value = content;
+    }
+    function selectResult(resultList) {
+        var idx = resultList.selectedIndex;
+        var content = resultList.options[idx].value;
+        document.getElementById("Result").value = content;
+    }
+    function submitClicked() {
+        var txtDateTime = document.getElementById("txtdatetimepicker");
+        var txtInterviewTime = document.getElementById("InterviewTime");
+        InterviewTime.value = txtDateTime.value;
+    }
+</script>
